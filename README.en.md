@@ -1,4 +1,4 @@
-﻿# Model Balance Panel · dsh-model-balance-panel
+# Model Balance Panel · dsh-model-balance-panel
 
 [![license](https://img.shields.io/github/license/qianhuang0721/dsh-model-balance-panel)](LICENSE)
 [![release](https://img.shields.io/github/v/release/qianhuang0721/dsh-model-balance-panel)](https://github.com/qianhuang0721/dsh-model-balance-panel/releases)

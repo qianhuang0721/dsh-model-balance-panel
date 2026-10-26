@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "dsh-model-balance-panel",
   "version": "0.1.0",
   "description": "在 DSH 左侧栏显示已配置模型的账户余额，以及 5 小时 / 周 / 月额度。Model balance and quota panel for the DeepSeek Harness sidebar.",

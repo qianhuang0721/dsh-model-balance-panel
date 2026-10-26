@@ -1,4 +1,4 @@
-﻿/**
+/**
  * dsh-model-balance-panel —— 浏览器半侧（Client）。
  *
  * 两处注册：
