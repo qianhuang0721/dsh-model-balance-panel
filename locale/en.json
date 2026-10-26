@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Model Balance",
+    "description": "Shows account balance and 5-hour, weekly, and monthly quotas for the models configured in DSH, refreshing whenever the panel opens."
+  }
+}

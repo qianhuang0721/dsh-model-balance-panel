@@ -1,0 +1,71 @@
+﻿{
+  "name": "dsh-model-balance-panel",
+  "version": "0.1.0",
+  "description": "在 DSH 左侧栏显示已配置模型的账户余额，以及 5 小时 / 周 / 月额度。Model balance and quota panel for the DeepSeek Harness sidebar.",
+  "type": "module",
+  "icon": "icon.svg",
+  "license": "MIT",
+  "author": {
+    "name": "qianhuang0721",
+    "url": "https://github.com/qianhuang0721"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "balance",
+    "quota",
+    "usage",
+    "sidebar",
+    "web-ui",
+    "余额",
+    "额度"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qianhuang0721/dsh-model-balance-panel.git"
+  },
+  "homepage": "https://github.com/qianhuang0721/dsh-model-balance-panel#readme",
+  "bugs": {
+    "url": "https://github.com/qianhuang0721/dsh-model-balance-panel/issues"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node --check index.js && node --check client.js"
+  },
+  "engines": {
+    "dsh": ">=0.2.1-rc.3",
+    "node": ">=22.12.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.1-rc.3": "compatible"
+      }
+    }
+  }
+}
