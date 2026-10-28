@@ -10,6 +10,8 @@ provider's own account endpoint, and **the panel refreshes every time you open i
 > Unofficial plugin, not affiliated with DeepSeek. Figures come from third-party APIs and are for
 > reference only; the provider's own billing page is authoritative.
 
+![The balance panel: sidebar entry, plus per-provider balance and 5-hour / weekly / monthly quotas](docs/preview.png)
+
 ## What it shows
 
 - A wallet icon in the left sidebar (after Plugins and Schedules). Clicking it opens the balance panel.
