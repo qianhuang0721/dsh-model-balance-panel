@@ -17,7 +17,8 @@
 - **左栏图标**：钱包字形，排在「插件」「定时」之后；点开即切到余额面板。
 - **每个服务商一张卡片**，卡片上是它的**模型清单**（当前在用的模型高亮），下面是该服务商的余额：
   - 订阅 / 额度制（如 OpenCode Go）：**5 小时额度、周额度、月额度** 三条进度条，
-    显示已用百分比、按满额度折算的剩余金额、重置时间；≥70% 变黄、≥90% 变红。
+    显示接口回报的已用百分比与重置时间；≥70% 变黄、≥90% 变红。
+    这类服务商**不显示美元金额**——见下方「为什么 OpenCode 不显示金额」。
   - 金额制（DeepSeek API Key / DSH 登录账号）：可用余额，以及赠送、充值两个分项。
 - **状态如实**：`已同步` / `未配置凭证` / `不支持查询` / `查询失败`（附原因）。
   取不到就是取不到，**不会显示一个假的 0**。
@@ -28,7 +29,7 @@
 
 | provider id | 余额来源 | 展示 |
 | --- | --- | --- |
-| `opencode-go` | `GET https://opencode.ai/zen/go/v1/usage` | 5 小时 / 周 / 月 三窗口 |
+| `opencode-go` | `GET https://opencode.ai/zen/go/v1/usage` | 5 小时 / 周 / 月 三窗口的百分比与重置时间（无金额） |
 | `commandcode` | `GET https://api.commandcode.ai/alpha/*`（whoami / credits / subscriptions / usage） | 月额度（含剩余金额），有 `windowLimits` 时补 5 小时 / 周窗口 |
 | `deepseek-official`、`deepseek` | `GET https://api.deepseek.com/user/balance` | 账户金额 |
 | `deepseek-account` | `ctx.deepseekAccount.getBalance()`（无 API Key，走登录态） | 账户金额 |
@@ -40,6 +41,17 @@
 > `deepseek-official` 与 `deepseek-account` 是两条独立路由，按各自账户算钱，金额通常不相同：
 > 前者扣 API Key 所属的开放平台账户，后者扣你在 DSH 里登录的账号。
 
+### 为什么 OpenCode 不显示金额
+
+`GET /zen/go/v1/usage` 只回报三个窗口的**百分比**（`percent`）和重置时间，响应里没有任何金额字段。
+OpenCode 的 Go 页面另外写明：额度按**模型**、按**套餐**（Go / Go Plus）不同，并且会调整。
+
+这意味着任何「剩余 $X」都只能靠一个假设的满额度去折算，额度一改就会算错。所以从 v0.1.1 起，
+本插件**不再为 OpenCode 推算金额**：只显示百分比、重置时间和「当前在用」标记，数字全部来自接口。
+要看账单口径的金额，请以 OpenCode 官方控制台为准。
+
+Command Code 是例外——它的额度接口本身回报 `totalCost` 与剩余 credits，所以月额度会显示金额。
+
 ## 安装
 
 **应用内（推荐）**：设置 → 插件 → 从 Git / 本地目录安装，填入本仓库地址或本地路径。
@@ -47,7 +59,7 @@
 **命令行**：
 
 ```bash
-dsh plugin --profile <你的 profile> add "git+https://github.com/qianhuang0721/dsh-model-balance-panel.git#v0.1.0"
+dsh plugin --profile <你的 profile> add "git+https://github.com/qianhuang0721/dsh-model-balance-panel.git#v0.1.1"
 ```
 
 桌面端请用应用自己的插件管理器安装，profile 名一般是 `desktop`；`dsh web` 通常是 `web`。

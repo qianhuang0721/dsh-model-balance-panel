@@ -18,8 +18,8 @@ provider's own account endpoint, and **the panel refreshes every time you open i
 - One card per provider: the provider's **model list** (the model currently in use is highlighted)
   above its balance:
   - Subscription / quota providers (e.g. OpenCode Go): **5-hour, weekly and monthly quota** bars with
-    used percentage, remaining USD derived from the quota cap, and reset time. ≥70% turns yellow,
-    ≥90% red.
+    the used percentage the API reports and the reset time. ≥70% turns yellow, ≥90% red.
+    These providers show **no dollar amount** — see “Why OpenCode shows no money” below.
   - Money providers (DeepSeek API key / DSH account): available balance, plus granted and topped-up parts.
 - Honest states: `Synced`, `No credential`, `Not supported`, `Failed` with the reason. A missing number
   is never rendered as a fake `0`.
@@ -30,10 +30,24 @@ provider's own account endpoint, and **the panel refreshes every time you open i
 
 | provider id | Source | Display |
 | --- | --- | --- |
-| `opencode-go` | `GET https://opencode.ai/zen/go/v1/usage` | 5h / weekly / monthly windows |
+| `opencode-go` | `GET https://opencode.ai/zen/go/v1/usage` | 5h / weekly / monthly percentage and reset time (no money) |
 | `commandcode` | `GET https://api.commandcode.ai/alpha/*` | monthly credits, plus 5h / weekly when `windowLimits` is present |
 | `deepseek-official`, `deepseek` | `GET https://api.deepseek.com/user/balance` | account money |
 | `deepseek-account` | `ctx.deepseekAccount.getBalance()` (signed-in account, no API key) | account money |
+
+### Why OpenCode shows no money
+
+`GET /zen/go/v1/usage` returns only the three windows' **percentages** and reset times; the response
+carries no amount. OpenCode's Go page also states that allowances vary by **model** and by **plan**
+(Go / Go Plus), and change over time.
+
+Any “$X left” would therefore be a guess against an assumed cap, and would silently go wrong when the
+allowance changes. Since v0.1.1 the plugin does not derive money for OpenCode: it shows the percentage,
+the reset time and the active-model badge, all straight from the API. For billing-grade figures, use the
+OpenCode console.
+
+Command Code is the exception: its own API reports `totalCost` and remaining credits, so its monthly
+window does show money.
 
 Providers without a billing API are **not hidden**: the card says `Not supported`.
 Adding a provider is one entry in `PROVIDERS` in `index.js`; the browser half needs no change.
@@ -41,7 +55,7 @@ Adding a provider is one entry in `PROVIDERS` in `index.js`; the browser half ne
 ## Install
 
 ```bash
-dsh plugin --profile <your-profile> add "git+https://github.com/qianhuang0721/dsh-model-balance-panel.git#v0.1.0"
+dsh plugin --profile <your-profile> add "git+https://github.com/qianhuang0721/dsh-model-balance-panel.git#v0.1.1"
 ```
 
 Or install this repository from the in-app plugin manager. No build step, no dependencies, no install

@@ -162,9 +162,6 @@ async function fetchJson(url, key, label) {
 // 加一个服务商 = 在 PROVIDERS 里加一条，客户端不用动。
 // ---------------------------------------------------------------------------
 
-/** OpenCode Go 三个窗口的满额度金额（USD）。业务常量：接口只回报百分比，不回报额度。 */
-const OPENCODE_GO_QUOTA_USD = { rolling: 12, weekly: 30, monthly: 60 };
-
 /** Command Code 控制面基址（`/alpha/*` 固定在根域名，与推理数据面不是同一条路径） */
 const COMMANDCODE_API_BASE = 'https://api.commandcode.ai';
 
@@ -178,6 +175,10 @@ const PROVIDERS = [
      * OpenCode Go：三窗口用量。
      * `GET https://opencode.ai/zen/go/v1/usage` → `{ usage: { rolling, weekly, monthly } }`。
      * 三窗与三窗的重置时间都保证存在，缺一个就说明响应形态变了 → 抛错，不静默。
+     *
+     * **不给 capUsd**：接口只回报百分比，额度本身不发。官方 Go 文档写明额度「按模型、按套餐
+     * （Go / Go Plus）不同且会调整」，没有任何公开接口回报金额，所以这里不猜一个数换算成美元 ——
+     * 额度一变，"剩余金额"就会错。面板对没有 capUsd 的窗口只显示百分比与重置时间。
      */
     async fetch({ key }) {
       const body = await fetchJson('https://opencode.ai/zen/go/v1/usage', key, 'opencode usage');
@@ -193,17 +194,14 @@ const PROVIDERS = [
           rolling: {
             label: '5h',
             percent: num(rolling.percent, 'rolling.percent'),
-            capUsd: OPENCODE_GO_QUOTA_USD.rolling,
             resetsAt: resetTime(rolling.resetsAt),
           },
           weekly: {
             percent: num(weekly.percent, 'weekly.percent'),
-            capUsd: OPENCODE_GO_QUOTA_USD.weekly,
             resetsAt: resetTime(weekly.resetsAt),
           },
           monthly: {
             percent: num(monthly.percent, 'monthly.percent'),
-            capUsd: OPENCODE_GO_QUOTA_USD.monthly,
             resetsAt: resetTime(monthly.resetsAt),
           },
         },
